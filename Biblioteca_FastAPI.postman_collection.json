@@ -1,0 +1,286 @@
+{
+  "info": {
+    "_postman_id": "d1dc9367-1987-4d89-984b-biblioteca-fastapi",
+    "name": "Biblioteca FastAPI",
+    "description": "Collection para testar a API Biblioteca FastAPI local.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Healthcheck",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /users - Criar usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rodrigo\",\n  \"email\": \"rodrigo@email.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /login - Gerar token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const response = pm.response.json();",
+                  "  pm.collectionVariables.set('access_token', response.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "rodrigo@email.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /users - Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authors",
+      "item": [
+        {
+          "name": "POST /authors - Criar autor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Machado de Assis\",\n  \"biography\": \"Escritor brasileiro.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/authors",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "authors"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /authors - Listar autores",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/authors",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "authors"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /authors/{author_id} - Buscar autor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/authors/{{author_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "authors",
+                "{{author_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "POST /books - Criar livro",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/books?title=Dom%20Casmurro&year=1899&author_id={{author_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "books"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Dom Casmurro"
+                },
+                {
+                  "key": "year",
+                  "value": "1899"
+                },
+                {
+                  "key": "author_id",
+                  "value": "{{author_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /books - Listar livros",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/books",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "books"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /books/{book_id} - Remover livro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/books/{{book_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "books",
+                "{{book_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "author_id",
+      "value": "1"
+    },
+    {
+      "key": "book_id",
+      "value": "1"
+    }
+  ]
+}
