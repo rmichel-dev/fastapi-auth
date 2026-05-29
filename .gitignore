@@ -1,0 +1,10 @@
+app/__pycache__/__init__.cpython-313.pyc
+app/__pycache__/auth.cpython-313.pyc
+app/__pycache__/database.cpython-313.pyc
+app/__pycache__/main.cpython-313.pyc
+app/__pycache__/models.cpython-313.pyc
+app/__pycache__/schemas.cpython-313.pyc
+app/routers/__pycache__/authors.cpython-313.pyc
+app/routers/__pycache__/books.cpython-313.pyc
+app/routers/__pycache__/login.cpython-313.pyc
+app/routers/__pycache__/users.cpython-313.pyc

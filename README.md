@@ -1,20 +1,21 @@
 # Biblioteca FastAPI
 
-Este projeto é uma API simples de biblioteca criada com FastAPI e SQLAlchemy usando SQLite como banco de dados.
+API didática de biblioteca criada com FastAPI, SQLAlchemy e SQLite.
 
-## Descrição
+O projeto demonstra uma organização simples com routers separados, schemas Pydantic, cadastro de usuários, hash de senha, autenticação com JWT e rotas protegidas.
 
-A aplicação inclui modelos relacionais para:
+## Recursos
 
-- `Author`: autor com `id`, `name` e `biography`
-- `Book`: livro com `id`, `title`, `year` e `author_id`
-
-Também há rotas para criar e listar autores, livros e usuários.
-O projeto também inclui cadastro de usuário com senha criptografada, login com JWT e uma rota de exclusão de livros protegida para administradores.
+- Cadastro e listagem de usuários
+- Cadastro e listagem de autores
+- Login com JWT
+- Cadastro de livros vinculado ao usuário autenticado
+- Listagem dos livros do usuário logado
+- Exclusão de livros somente pelo usuário dono do registro
 
 ## Requisitos
 
-- Python 3.11+ (ou outra versão compatível)
+- Python 3.11 a 3.13
 - FastAPI
 - SQLAlchemy
 - Uvicorn
@@ -30,13 +31,13 @@ O projeto também inclui cadastro de usuário com senha criptografada, login com
 Linux/macOS:
 
 ```bash
-python3 -m venv venv
+python3.13 -m venv venv
 ```
 
 Windows:
 
 ```powershell
-py -m venv venv
+py -3.13 -m venv venv
 ```
 
 2. Ative o ambiente virtual.
@@ -59,10 +60,12 @@ Windows CMD:
 venv\Scripts\activate.bat
 ```
 
-3. Instale as dependências:
+3. Instale as dependências.
+
+Instale as dependências listadas no `requirements.txt`:
 
 ```bash
-pip install fastapi uvicorn sqlalchemy bcrypt "python-jose[cryptography]" python-multipart email-validator
+pip install -r requirements.txt
 ```
 
 ## Execução
@@ -73,21 +76,36 @@ Execute a aplicação com:
 uvicorn app.main:app --reload
 ```
 
-A API ficará disponível em `http://127.0.0.1:8000`.
+A API ficará disponível em:
+
+```text
+http://127.0.0.1:8000
+```
 
 A documentação interativa ficará disponível em:
 
 - `http://127.0.0.1:8000/docs`
 - `http://127.0.0.1:8000/redoc`
 
-## Como testar autenticação
+## Fluxo de teste no Swagger
+
+1. Acesse `http://127.0.0.1:8000/docs`.
+2. Use `POST /users/` para criar um usuário.
+3. Clique em **Authorize**.
+4. Informe o e-mail no campo `username` e a senha no campo `password`.
+5. Use `POST /authors/` para criar um autor.
+6. Use `POST /books/` para criar um livro vinculado ao usuário logado.
+7. Use `GET /books/my-books` para listar apenas os livros do usuário autenticado.
+8. Crie outro usuário e confirme que cada usuário vê somente os próprios livros.
+
+## Como testar autenticação com curl
 
 1. Crie um usuário:
 
 Linux/macOS:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/users \
+curl -X POST http://127.0.0.1:8000/users/ \
   -H "Content-Type: application/json" \
   -d '{"name":"Rodrigo","email":"rodrigo@email.com","password":"123456"}'
 ```
@@ -95,12 +113,12 @@ curl -X POST http://127.0.0.1:8000/users \
 Windows PowerShell:
 
 ```powershell
-curl.exe -X POST http://127.0.0.1:8000/users `
+curl.exe -X POST http://127.0.0.1:8000/users/ `
   -H "Content-Type: application/json" `
   -d "{\"name\":\"Rodrigo\",\"email\":\"rodrigo@email.com\",\"password\":\"123456\"}"
 ```
 
-2. Faça login usando o email no campo `username`:
+2. Faça login usando o e-mail no campo `username`:
 
 Linux/macOS:
 
@@ -125,40 +143,37 @@ curl.exe -X POST http://127.0.0.1:8000/login `
 Linux/macOS:
 
 ```bash
-curl -X DELETE http://127.0.0.1:8000/books/1 \
+curl -X GET http://127.0.0.1:8000/books/my-books \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
 Windows PowerShell:
 
 ```powershell
-curl.exe -X DELETE http://127.0.0.1:8000/books/1 `
+curl.exe -X GET http://127.0.0.1:8000/books/my-books `
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
-
-Observação: a rota `DELETE /books/{book_id}` exige que o usuário tenha `is_admin = true` no banco de dados.
 
 ## Endpoints principais
 
 - `GET /` - rota de teste
-- `POST /authors` - cria um novo autor
-- `GET /authors` - lista todos os autores
-- `GET /authors/{author_id}` - busca autor por ID
-- `POST /books` - cria um novo livro
-- `GET /books` - lista todos os livros
-- `DELETE /books/{book_id}` - remove um livro, exige usuário administrador autenticado
-- `POST /users` - cria um usuário com senha criptografada
-- `GET /users` - lista todos os usuários
+- `POST /users/` - cria um usuário com senha criptografada
+- `GET /users/` - lista todos os usuários
 - `POST /login` - autentica o usuário e retorna um token JWT
+- `POST /authors/` - cria um autor
+- `GET /authors/` - lista todos os autores
+- `POST /books/` - cria um livro para o usuário autenticado
+- `GET /books/my-books` - lista os livros do usuário autenticado
+- `DELETE /books/{book_id}` - remove um livro do usuário autenticado
 
 ## Banco de dados
 
-O arquivo SQLite usado pelo projeto é `database.db` no diretório raiz.
+O projeto usa SQLite, e o arquivo do banco fica em `database.db` no diretório raiz.
 
 ## Observações
 
-- A rota `POST /books` espera parâmetros `title`, `year` e `author_id` no corpo da requisição ou em query string.
-- A rota `POST /authors` valida o corpo com um schema Pydantic.
+- As rotas `POST /books/`, `GET /books/my-books` e `DELETE /books/{book_id}` exigem autenticação com token Bearer.
 - A rota `POST /login` usa `OAuth2PasswordRequestForm`, então os dados devem ser enviados como formulário.
-- A chave `SECRET_KEY` em `app/security.py` é apenas para estudo. Em produção, use uma chave forte e fora do código-fonte.
+- A chave `SECRET_KEY` em `app/auth.py` é apenas para estudo. Em produção, use uma chave forte e fora do código-fonte.
+- Em produção, o ideal é usar variáveis de ambiente, banco PostgreSQL/MySQL e migrations com Alembic.
 - No Windows PowerShell, use `curl.exe` nos exemplos. O comando `curl` sozinho pode ser um alias do PowerShell.

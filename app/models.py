@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -18,12 +18,14 @@ class User(Base):
     # Indica se o usuário tem privilégios de administrador.
     is_admin = Column(Boolean, default=False)
 
+    # Livros cadastrados por este usuário.
+    books = relationship("Book", back_populates="owner")
+
 
 # Autor no sistema de biblioteca.
 class Author(Base):
     __tablename__ = "authors"
 
-    # Identificador único do autor.
     id = Column(Integer, primary_key=True, index=True)
     # Nome do autor.
     name = Column(String, nullable=False)
@@ -38,7 +40,6 @@ class Author(Base):
 class Book(Base):
     __tablename__ = "books"
 
-    # Identificador único do livro.
     id = Column(Integer, primary_key=True, index=True)
     # Título do livro.
     title = Column(String, nullable=False)
@@ -46,6 +47,8 @@ class Book(Base):
     year = Column(Integer, nullable=False)
     # Chave estrangeira para o autor do livro.
     author_id = Column(Integer, ForeignKey("authors.id"), nullable=False)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     # Relacionamento reverso para acessar o autor.
     author = relationship("Author", back_populates="books")
+    owner = relationship("User", back_populates="books")
