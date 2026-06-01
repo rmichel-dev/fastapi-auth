@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca - JS Puro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <p class="tag">Aula 04</p>
+      <h1>Consumindo FastAPI com JavaScript puro</h1>
+      <p>Cadastro, login com token e CRUD básico de livros usando fetch().</p>
+    </header>
+
+    <section class="grid">
+      <form id="registerForm" class="card">
+        <h2>Criar usuário</h2>
+        <input id="regName" placeholder="Nome" required />
+        <input id="regEmail" type="email" placeholder="E-mail" required />
+        <input id="regPassword" type="password" placeholder="Senha" required />
+        <button>Cadastrar</button>
+      </form>
+
+      <form id="loginForm" class="card">
+        <h2>Login</h2>
+        <input id="loginEmail" type="email" placeholder="E-mail" required />
+        <input id="loginPassword" type="password" placeholder="Senha" required />
+        <button>Entrar</button>
+        <small id="tokenStatus">Token: não autenticado</small>
+      </form>
+    </section>
+
+    <section class="grid">
+      <form id="authorForm" class="card">
+        <h2>Criar autor</h2>
+        <input id="authorName" placeholder="Nome do autor" required />
+        <textarea id="authorBiography" placeholder="Biografia"></textarea>
+        <button>Cadastrar autor</button>
+      </form>
+
+      <form id="bookForm" class="card">
+        <h2>Criar livro</h2>
+        <input id="bookTitle" placeholder="Título" required />
+        <input id="bookYear" type="number" placeholder="Ano" required />
+        <input id="bookAuthorId" type="number" placeholder="ID do autor" value="1" required />
+        <button>Cadastrar livro</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="row">
+        <h2>Meus livros</h2>
+        <button id="reloadBooks" type="button">Atualizar</button>
+      </div>
+      <ul id="bookList" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Mensagens</h2>
+      <pre id="messages">Pronto para testar.</pre>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
