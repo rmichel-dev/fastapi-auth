@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biblioteca - JS Puro</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <main class="container">
     <header>
@@ -14,6 +16,14 @@
       <p>Cadastro, login com token e CRUD básico de livros usando fetch().</p>
     </header>
 
+
+    <section class="card">
+      <h2>Listar usuário</h2>
+      <button id="getUsuariosbtn">Listar</button>
+      <div id="lista-usuarios"></div>
+
+    </section>
+    
     <section class="grid">
       <form id="registerForm" class="card">
         <h2>Criar usuário</h2>
@@ -64,5 +74,28 @@
   </main>
 
   <script src="script.js"></script>
+
+  <script>
+    document.getElementById("getUsuariosbtn").addEventListener("dblclick", async (event) => {
+      console.log("CHEGAMOS ATÉ AQUI");
+      const response = await fetch(`http://127.0.0.1:8000/authors/`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw data;
+      } 
+      document.getElementById("lista-usuarios").textContent = ""
+      for(var autor in data) {
+        var div = document.createElement('div')
+        div.textContent = data[autor].name
+        div.className = "primary"
+        document.getElementById("lista-usuarios").append(div)
+
+      }
+    })
+  </script>
 </body>
+
 </html>
